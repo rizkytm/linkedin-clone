@@ -21,7 +21,7 @@ export const sendWelcomeEmail = async (email, name, profileUrl) => {
 export const sendCommentNotificationEmail = async (
     recipientEmail, recipientName, commenterName, postUrl, commentContent
 ) => {
-    const recipient = [{email}]
+    const recipient = [{email: recipientEmail}]
 
     try {
         const response = await mailtrapClient.testing.send({
@@ -36,3 +36,17 @@ export const sendCommentNotificationEmail = async (
         throw error;
     }
 }
+
+export const sendConnectionAcceptedEmail = async (senderEmail, senderName, recipientName, profileUrl) => {
+	const recipient = [{ email: senderEmail }];
+
+	try {
+		const response = await mailtrapClient.testing.send({
+			from: sender,
+			to: recipient,
+			subject: `${recipientName} accepted your connection request`,
+			html: createConnectionAcceptedEmailTemplate(senderName, recipientName, profileUrl),
+			category: "connection_accepted",
+		});
+	} catch (error) {}
+};
