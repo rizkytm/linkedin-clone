@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import { axiosInstance } from "./lib/axios"
 import NotificationsPage from "./pages/Notifications.Page"
 import NetworkPage from "./pages/NetworkPage"
+import PostPage from "./pages/PostPage"
 
 function App() {
   const { data: authUser, isLoading } = useQuery({
@@ -35,8 +36,9 @@ function App() {
       <Route path="/" element={authUser ? <HomePage /> : <Navigate to={"/login"} />} />
       <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />} />
       <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
-      <Route path="/notifications" element={authUser ? <NotificationsPage /> : <Navigate to={"/"} />} />
-      <Route path="/network" element={authUser ? <NetworkPage /> : <Navigate to={"/"} />} />
+      <Route path="/notifications" element={authUser ? <NotificationsPage /> : <Navigate to={"/login"} />} />
+      <Route path="/network" element={authUser ? <NetworkPage /> : <Navigate to={"/login"} />} />
+      <Route path="/post/:postId" element={authUser ? <PostPage /> : <Navigate to={"/"} />} />
     </Routes>
     <Toaster />
   </Layout>
