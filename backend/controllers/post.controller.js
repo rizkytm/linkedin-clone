@@ -103,21 +103,27 @@ export const createComment = async (req, res) => {
     ).populate('author', 'name email profilePicture username headline');
 
     if (post.author.toString() !== req.user._id.toString()) {
-        const newNotification = new Notification({
-            recipient: post.author,
-            type: 'comment',
-            relatedUser: req.user._id,
-            relatedPost: post._id,
-        });
+      const newNotification = new Notification({
+        recipient: post.author,
+        type: 'comment',
+        relatedUser: req.user._id,
+        relatedPost: post._id,
+      });
 
-        await newNotification.save();
-        
-        try {
-            const postUrl = process.env.CLIENT_URL + '/post/' + postId;
-            await sendCommentNotificationEmail(post.author.email, post.author.name, req.user.name, postUrl, content);
-        } catch (error) {
-            console.error('Error sending comment notification email: ', error);
-        }
+      await newNotification.save();
+
+      try {
+        const postUrl = process.env.CLIENT_URL + '/post/' + postId;
+        await sendCommentNotificationEmail(
+          post.author.email,
+          post.author.name,
+          req.user.name,
+          postUrl,
+          content
+        );
+      } catch (error) {
+        console.error('Error sending comment notification email: ', error);
+      }
     }
 
     res.status(200).json(post);
@@ -138,20 +144,22 @@ export const likePost = async (req, res) => {
     }
 
     if (post.likes.includes(userId)) {
-      post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
     } else {
       post.likes.push(userId);
 
       if (post.author.toString() !== userId.toString()) {
         const newNotification = new Notification({
-            recipient: post.author,
-            type: 'like',
-            relatedUser: userId,
-            relatedPost: postId,
+          recipient: post.author,
+          type: 'like',
+          relatedUser: userId,
+          relatedPost: postId,
         });
 
         await newNotification.save();
-    }
+      }
     }
 
     await post.save();
@@ -160,4 +168,4 @@ export const likePost = async (req, res) => {
     console.error('Error in likePost controller: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
