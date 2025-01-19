@@ -5,7 +5,9 @@ import Post from '../models/post.model.js';
 
 export const getFeedPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ author: { $in: req.user.connections } })
+    const posts = await Post.find({
+      author: { $in: [...req.user.connections, req.user._id] },
+    })
       .populate('author', 'name profilePicture username headline')
       .populate('comments.user', 'name profilePicture')
       .sort({ createdAt: -1 });
