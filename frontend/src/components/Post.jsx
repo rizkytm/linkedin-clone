@@ -66,6 +66,16 @@ const Post = ({ post }) => {
 		likePost();
 	};
 
+	const handleShare = async (post) => {
+		try {
+			await navigator.clipboard.writeText(`${window.location.origin}/post/${post._id}`);
+			toast.success("Link copied to clipboard");
+		} catch (error) {
+			console.log(error);
+			toast.error("Failed to copy link");
+		}
+	}
+
 	const handleAddComment = async (e) => {
 		e.preventDefault();
 		if (newComment.trim()) {
@@ -130,7 +140,12 @@ const Post = ({ post }) => {
 						text={`Comment (${comments.length})`}
 						onClick={() => setShowComments(!showComments)}
 					/>
-					<PostAction icon={<Share2 size={18} />} text='Share' />
+
+					<PostAction
+						icon={<Share2 size={18} />}
+						text='Share'
+						onClick={() => handleShare(post)}
+					/>
 				</div>
 			</div>
 
